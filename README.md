@@ -1,141 +1,169 @@
-# CampusFix Backend – AI-Powered Campus Complaint Management System
+# CampusFix – Admin Dashboard & Operations Analytics
 
-CampusFix is an intelligent campus complaint and grievance resolution platform. It provides a secure, role-based backend for logging, triaging, assigning, and resolving campus infrastructure and facility issues.
+Professional administrative and facility operations module for the **CampusFix** university incident management platform.
 
----
-
-## 1. Technology Stack
-
-- **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.10+)
-- **Database**: [SQLite](https://www.sqlite.org/) (Local file storage, zero cloud database)
-- **ORM**: [SQLAlchemy 2.0](https://www.sqlalchemy.org/)
-- **Data Validation & Schemas**: [Pydantic v2](https://docs.pydantic.dev/)
-- **Password Hashing**: `bcrypt` / secure PBKDF2 standard
-- **Authentication**: JWT (JSON Web Tokens) with Role-Based Access Control (RBAC)
-- **Local AI Interface**: [Ollama](http://localhost:11434) integration ready (zero cloud AI APIs)
-- **CORS**: Configured for local Vite frontend (`http://localhost:5173`)
+Built with **React**, **Tailwind CSS**, **React Router**, **Recharts**, and **Lucide React**.
 
 ---
 
-## 2. Directory Structure
+## 1. Module Overview & Architecture
+
+This module provides university facility managers, estates officers, and central operations authorities with real-time command of student maintenance reports, department dispatching, resolution workflows, and deduplication intelligence.
 
 ```
-backend/
-├── main.py               # FastAPI application setup, CORS, lifespan, router mounting
-├── database.py           # SQLite connection, engine, and session dependency (get_db)
-├── models.py             # SQLAlchemy models (User, Complaint, StatusHistory, Department)
-├── schemas.py            # Pydantic schemas for requests, responses, and validation
-├── auth.py               # Password hashing, JWT token handling, RBAC dependencies
-├── requirements.txt      # Dependency specification
-├── .env                  # Local environment configuration
-├── .env.example          # Environment template
-├── README.md             # Backend architecture and setup documentation
-├── routes/
-│   ├── users.py          # /api/register, /api/login, /api/me, /api/users
-│   ├── complaints.py     # /api/complaints, /api/complaints/{id}, /status, /assign
-│   ├── analytics.py      # /api/analytics (live SQLite statistics)
-│   ├── departments.py    # /api/departments
-│   └── ai.py             # /api/ai/analyze, /api/ai/chat
-└── ai/
-    └── __init__.py       # Member 3 AI interface & local heuristic/Ollama fallback
+frontend/src/
+├── components/
+│   └── admin/
+│       ├── AdminSidebar.jsx       # Deep navy responsive navigation sidebar & API health indicator
+│       ├── StatsCard.jsx          # KPI metric cards with trends, accent bars & variants
+│       ├── ComplaintTable.jsx     # High-density university operations table with inline actions
+│       ├── StatusBadge.jsx        # Standardized Status, Priority & Department badges
+│       ├── AnalyticsCharts.jsx    # Recharts: Category Bar, Status Donut, Dept Stack, Location
+│       └── index.js               # Barrel export for admin components
+└── pages/
+    └── admin/
+        ├── AdminDashboard.jsx     # Executive overview, KPI cards, recent incidents & triage
+        ├── ComplaintManagement.jsx# Faceted search, multi-filter registry, CSV export
+        ├── ComplaintDetails.jsx   # In-depth dossier, status transitions, resolution notes & audit log
+        ├── Analytics.jsx          # Empirical charts, resolution rate metrics & category matrix
+        ├── DepartmentManagement.jsx# Division workload cards, unassigned triage & dispatch
+        ├── DuplicateDetection.jsx # Text & location similarity detection (Levenshtein + Jaccard)
+        ├── AdminRoutes.jsx        # Modular plug-and-play router for easy App.jsx integration
+        ├── adminApi.js            # Live API client (http://localhost:8000/api) with resilient fallback
+        ├── duplicateHelper.js     # Text tokenization, location proximity & duplicate scoring
+        └── index.js               # Barrel export for admin pages
 ```
 
 ---
 
-## 3. Demo Accounts (Seeded Automatically)
+## 2. Integration into `App.jsx`
 
-Upon startup, the database automatically seeds three demo accounts:
+To integrate this module without modifying any student portal routes or overwriting configuration, add the modular `AdminRoutes` or individual route imports to your existing `App.jsx`:
 
-| Role | Name | Email | Password | Permissions |
-| :--- | :--- | :--- | :--- | :--- |
-| **Admin** | Campus Administrator | `admin@campusfix.edu` | `admin123` | Full access: assign departments, assign staff, update status, view all complaints & analytics |
-| **Staff** | Hostel Maintenance Officer | `staff@campusfix.edu` | `staff123` | Update complaint status, view campus complaints, add resolution notes |
-| **Student** | Alex Johnson | `student@campusfix.edu` | `student123` | Submit complaints, view only own complaints, check status history |
+### Option A: Clean Modular Route (Recommended)
+
+```jsx
+import { AdminRoutes } from './pages/admin/AdminRoutes';
+
+function App() {
+  return (
+    <Routes>
+      {/* Existing Student Portal Routes (untouched) */}
+      <Route path="/" element={<StudentHome />} />
+      <Route path="/submit" element={<SubmitComplaint />} />
+      <Route path="/my-complaints" element={<StudentComplaints />} />
+
+      {/* Admin Module Subtree */}
+      <Route path="/admin/*" element={<AdminRoutes />} />
+    </Routes>
+  );
+}
+```
+
+### Option B: Direct Route Definitions
+
+```jsx
+import {
+  AdminDashboard,
+  ComplaintManagement,
+  ComplaintDetails,
+  Analytics,
+  DepartmentManagement,
+  DuplicateDetection
+} from './pages/admin';
+
+// Inside your <Routes>:
+<Route path="/admin" element={<AdminDashboard />} />
+<Route path="/admin/complaints" element={<ComplaintManagement />} />
+<Route path="/admin/complaints/:id" element={<ComplaintDetails />} />
+<Route path="/admin/departments" element={<DepartmentManagement />} />
+<Route path="/admin/duplicates" element={<DuplicateDetection />} />
+<Route path="/admin/analytics" element={<Analytics />} />
+```
 
 ---
 
-## 4. Quick Start & Execution
+## 3. Backend API Integration
 
-### Prerequisites
-- Python 3.10 or higher
-- Pip
+The API client is located in [adminApi.js](file:///c:/Users/user/OneDrive/Campus%20Fix%20Admin%20Dashboard/frontend/src/pages/admin/adminApi.js) and is configured to communicate with:
 
-### 1. Install Dependencies
-```bash
-cd backend
-pip install -r requirements.txt
-```
+**Base URL**: `http://localhost:8000/api`
 
-### 2. Start the Backend Server
-```bash
-python main.py
-```
-*Or using uvicorn directly:*
-```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-```
+### Configured Endpoints:
 
-### 3. Interactive API Documentation
-- **Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **ReDoc**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
-- **Health Check**: [http://localhost:8000/api/health](http://localhost:8000/api/health)
+| Method | Endpoint | Description | Payload / Response |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/complaints` | Fetch all complaints | Array of complaint objects |
+| `GET` | `/complaints/{id}` | Fetch individual complaint dossier | Single complaint object |
+| `GET` | `/analytics` | Fetch operations analytics | Totals, category breakdown, status breakdown, location counts |
+| `GET` | `/departments` | Fetch university departments | Array of department records, heads & capacities |
+| `PATCH` | `/complaints/{id}/status` | Update complaint status | `{ "status": "In Progress" \| "Resolved", "resolutionNotes": "..." }` |
+| `PATCH` | `/complaints/{id}/assign` | Assign department division | `{ "department": "Plumbing & Water Works" }` |
+
+> [!NOTE]
+> **Resilient Offline Fallback**: If the backend server at `http://localhost:8000/api` is still booting up or unreachable during frontend testing, `adminApi.js` seamlessly serves initial seeded university data and persists interactive updates in local cache. Once the backend is online, live requests are dispatched automatically.
 
 ---
 
-## 5. API Endpoints Reference
+## 4. Key Functional Modules
 
-All endpoints are mounted under the base path: `/api`
+### 4.1 Admin Dashboard (`AdminDashboard.jsx`)
+- **KPI Stats Cards**: Total Complaints, Pending Triage, In Progress, Resolved.
+- **Priority Distribution Widget**: Live visual progress bars for Urgent, High, Medium, and Low incidents.
+- **Live Pipeline Chart**: Compact Recharts status donut.
+- **Recent Complaints Registry**: Quick inspection of latest campus complaints with inline status actions.
+- **Duplicate Alert Banner**: Proactively warns admins if open complaints share text or locations.
 
-### 🔑 Authentication & Users
-- `POST /api/register` – Register a new user (`student`, `staff`, or `admin`)
-- `POST /api/login` – Authenticate with email and password, returns JWT Bearer token
-- `GET /api/me` – Retrieve profile of current logged-in user
-- `GET /api/users?role=staff` – List staff or users (Admin/Staff only)
+### 4.2 Complaint Management (`ComplaintManagement.jsx`)
+- **Full Data Table**: ID, Student (Name + ID + Avatar), Title, Category, Location, Priority, Assigned Department, Status, Date.
+- **Multi-Facet Filters**:
+  - Live search across ID, Title, Student name, Description, Location.
+  - Category dropdown.
+  - Priority dropdown.
+  - Status quick pills + dropdown.
+  - Department filter (including "Unassigned Only").
+- **CSV Export**: Instant download of filtered incident table with university formatting.
+- **Deep-linking**: Filter states synchronize seamlessly with browser URL query parameters (`?status=Pending&priority=Urgent`).
 
-### 📋 Complaints Workflow
-- `POST /api/complaints` – Submit a new complaint (Student/User)
-  - Auto-generates unique ID (e.g. `CMP-20261030-A8B2`)
-  - Initial status: `Pending`
-  - Creates initial audit entry in `StatusHistory`
-- `GET /api/complaints` – List complaints:
-  - Students see **only** their own complaints.
-  - Admin/Staff see **all** complaints with query filters (`status`, `category`, `department`, `priority`, `search`).
-- `GET /api/complaints/{id}` – View single complaint by integer ID or `complaint_id` string:
-  - Students are prevented from accessing other students' complaints (`403 Forbidden`).
-  - Returns linked student, assignee, and complete `status_history`.
-- `PATCH /api/complaints/{id}/status` – Update complaint status (`Pending`, `In Progress`, `Resolved`, `Rejected`):
-  - Accessible by **Admin** or **Staff** only.
-  - Automatically adds an entry in `StatusHistory` with timestamp and notes.
-- `PATCH /api/complaints/{id}/assign` – Assign complaint to a department and/or staff member:
-  - Accessible by **Admin** only.
+### 4.3 Complaint Details & Status Workflow (`ComplaintDetails.jsx`)
+- **Inspection Dossier**: Full incident report with location tags, submission timestamps, and student profile.
+- **Status Transition Workflow**:
+  - `Pending` $\to$ `In Progress` $\to$ `Resolved`.
+  - Resolution & Maintenance notes field with technical audit logging.
+  - Dispatches `PATCH /complaints/{id}/status` to the backend.
+- **Department Dispatch**:
+  - Assign to any active department division.
+  - Dispatches `PATCH /complaints/{id}/assign` to the backend.
+- **Audit Timeline**: Chronological log of state transitions with author and timestamps.
+- **Duplicate Warning**: In-page similarity warning banner linking directly to matching complaints.
 
-### 🏢 Departments
-- `GET /api/departments` – Retrieve all campus departments (e.g., Hostel, Electrical, IT, Plumbing).
-- `POST /api/departments` – Add a new campus department (Admin only).
+### 4.4 Department Operations (`DepartmentManagement.jsx`)
+- **Department Division Cards**: Workload, contact info, head of department, active tickets, resolution velocity.
+- **Unassigned Incident Triage**: Dedicated quick-access queue for unassigned student reports.
+- **Interactive Assignment**: Reassign tickets directly from the department registry.
 
-### 📊 Real-time Analytics
-- `GET /api/analytics` – Returns actual database-driven metrics:
-  - `total_complaints`
-  - `pending_complaints`
-  - `in_progress_complaints`
-  - `resolved_complaints`
-  - `complaints_by_category`
-  - `complaints_by_department`
-  - `complaints_by_location`
+### 4.5 Recharts Analytics (`Analytics.jsx` & `AnalyticsCharts.jsx`)
+- **Category-Wise Bar Chart**: Visualizes complaint density across infrastructure types.
+- **Complaint Status Pie Chart**: Donut chart with live percentage breakdown and center counter.
+- **Department-Wise Stacked Bar Chart**: Workload breakdown (Pending, In Progress, Resolved) per department.
+- **Location Hotspot Chart**: Identifies campus zones with the highest incident frequencies.
+- **Category Performance Matrix**: Tabular breakdown of SLA metrics, volume, and resolution rates.
 
-### 🤖 AI Service (Member 3 Integration)
-- `POST /api/ai/analyze` – Classifies complaint text, detects category, priority, and suggested department.
-- `POST /api/ai/chat` – Interactive chatbot assistant for student grievance guidance.
-
-> **Member 3 Note**: The AI service interface is located in `backend/ai/__init__.py`. It is pre-configured to query local Ollama (`http://localhost:11434`) when active, and provides a built-in deterministic heuristic fallback so the entire system operates immediately without cloud API dependencies.
+### 4.6 Duplicate Detection Engine (`DuplicateDetection.jsx` & `duplicateHelper.js`)
+- **Text & Location Similarity**:
+  - Tokenization, stop-word elimination, Jaccard token overlap.
+  - Normalized Levenshtein distance on incident titles.
+  - Location token matching (e.g. `Hostel Block B, Floor 3` vs `Hostel Block B, 3rd Floor`).
+- **Safety Policy**: Strictly complies with the rule: **Do not automatically delete or merge complaints**.
+- **Side-by-Side Comparison**: Highlights shared keywords, confidence score, and allows marking as reviewed.
 
 ---
 
-## 6. Complaint Lifecycle & RBAC Rules
+## 5. Design Specifications
 
-1. **Submission**: A student submits a complaint with title, description, category, and location.
-2. **Identification**: The backend validates fields, assigns a unique tracking ID (`CMP-YYYYMMDD-XXXX`), and stores it with status `Pending`.
-3. **Assignment**: An administrator reviews the complaint and assigns it to a relevant department and staff officer via `/api/complaints/{id}/assign`.
-4. **Resolution**: The assigned staff updates the status to `In Progress` and subsequently `Resolved` via `/api/complaints/{id}/status`.
-5. **Auditing**: Every status change is captured in the `status_history` table with timestamps, previous status, new status, and action notes.
-6. **Privacy**: Students cannot view or modify complaints filed by other students.
+- **Color Palette**:
+  - Background & Shell: Deep Navy Blue (`#020617`, `#0f172a`, `#1e293b`).
+  - Surfaces: Slate-50, crisp white cards (`bg-white border border-slate-200`).
+  - Accents: University Blue (`#2563eb`), Amber (`#f59e0b`), Emerald (`#10b981`), Rose (`#f43f5e`).
+- **Typography**: Clean tabular fonts, monospaced ID tags (`#CMP-2026-1041`), clear visual hierarchy.
+- **Responsiveness**: Persistent desktop sidebar, collapsible mobile navigation drawer, and horizontal-scroll data tables.
