@@ -1,0 +1,73 @@
+{
+  "campus_info": {
+    "system_name": "CampusFix",
+    "disclaimer": "This AI assistant answers general questions using campus maintenance policies. It does NOT have access to live university database records or personal student account details."
+  },
+  "faqs": [
+    {
+      "category": "Reporting complaints",
+      "question": "How do I report a maintenance complaint on CampusFix?",
+      "answer": "To report a complaint, navigate to the 'Submit Complaint' section on the CampusFix portal. Select the appropriate category, specify the exact campus location (building, room or lab number), provide a clear description of the problem, and attach photos if available. Submit the form to generate a complaint ticket."
+    },
+    {
+      "category": "Reporting complaints",
+      "question": "What information should I include when submitting a complaint?",
+      "answer": "Always include: 1) The exact location (Block, Floor, Room/Lab number), 2) A clear and specific description of the defect or issue, 3) The asset ID or computer number if applicable, and 4) Urgency indicators (such as water leakage or electrical sparks)."
+    },
+    {
+      "category": "Reporting complaints",
+      "question": "Can I report an issue anonymously?",
+      "answer": "Yes, CampusFix allows anonymous submissions for general campus infrastructure issues. However, complaints related to specific hostel rooms or personal allocations require student authentication for verification and room access by maintenance staff."
+    },
+    {
+      "category": "Checking complaint status",
+      "question": "How do I check the status of my complaint?",
+      "answer": "Log in to the CampusFix student portal and click on 'My Complaints' or 'Track Status'. Enter your Complaint ID to view real-time updates and assignment details."
+    },
+    {
+      "category": "Checking complaint status",
+      "question": "Can this AI assistant check my complaint status or look up my ticket ID?",
+      "answer": "No. This AI assistant is an informational FAQ guide and does NOT connect to university records, database systems, or student accounts. To check your ticket status, please log in to the CampusFix portal and view the 'My Complaints' dashboard."
+    },
+    {
+      "category": "Checking complaint status",
+      "question": "What do the different complaint statuses mean?",
+      "answer": "Status definitions: 'Submitted' means logged in the system; 'Under Review' means categorized and reviewed by the maintenance coordinator; 'In Progress' means a technician or department team is working on the repair; 'Resolved' means maintenance work is completed; 'Closed' means verified by the student or administrator."
+    },
+    {
+      "category": "Complaint categories",
+      "question": "What complaint categories are supported on CampusFix?",
+      "answer": "CampusFix supports eight primary categories: Electrical, Internet/Wi-Fi, Lab Equipment, Hostel, Cleaning, Water Supply, Classroom, and Other."
+    },
+    {
+      "category": "Complaint categories",
+      "question": "Which category should I select for computer or projector issues in a lab?",
+      "answer": "For computers, servers, oscilloscopes, or specialized equipment in academic labs, select 'Lab Equipment'. For projectors in general lecture halls, select 'Classroom'. For network connectivity issues across any lab or campus space, select 'Internet/Wi-Fi'."
+    },
+    {
+      "category": "Maintenance departments",
+      "question": "Which maintenance departments handle repairs on campus?",
+      "answer": "Campus maintenance is handled by specialized departments: 1) Electrical Maintenance Unit (power lines, lighting, switchboards, UPS), 2) IT & Network Infrastructure Services (Wi-Fi access points, LAN, campus servers), 3) Lab Systems & Technical Support (computer labs, electronics/mechanical lab gear), 4) Estate & Civil Maintenance (hostels, masonry, plumbing, fixtures), and 5) Sanitation & Housekeeping (cleaning, waste management, washrooms)."
+    },
+    {
+      "category": "Maintenance departments",
+      "question": "What are the operating hours for campus maintenance teams?",
+      "answer": "Routine maintenance teams operate Monday through Saturday from 8:30 AM to 5:30 PM. Emergency maintenance teams (for severe power failures or water pipe bursts) are on-call 24/7 through the Campus Emergency Helpdesk."
+    },
+    {
+      "category": "Campus maintenance procedures",
+      "question": "How are complaint priorities determined?",
+      "answer": "Priorities are suggested as: 'High' for safety hazards, campus-wide network/power outages, or exam disruptions; 'Medium' for departmental lab/classroom equipment issues affecting lectures or study; and 'Low' for minor cosmetic defects, slow drainage, or non-critical repairs. The facilities manager confirms final scheduling."
+    },
+    {
+      "category": "Campus maintenance procedures",
+      "question": "What is the expected resolution timeline for campus repairs?",
+      "answer": "High-priority issues are targeted within 4 to 12 hours. Medium-priority issues are typically addressed within 24 to 48 hours. Low-priority or routine requests are scheduled within 3 to 5 business days."
+    },
+    {
+      "category": "Campus maintenance procedures",
+      "question": "What should I do in an emergency situation like an electrical spark or flooding?",
+      "answer": "In life-safety or urgent hazard situations (such as electrical sparking, smoke, or major pipe bursts), immediately vacate the area, warn others nearby, and call the Campus Emergency Control Room at 011-2345-6789 or alert the nearest security desk, in addition to logging the issue on CampusFix."
+    }
+  ]
+}
